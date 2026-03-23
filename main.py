@@ -86,6 +86,7 @@ Preguntas frecuentes:
 
 Reglas importantes:
 - Mantén respuestas breves.
+- Nunca des una lista completa de precios si el usuario no menciona servicios específicos.
 - Si preguntan por precios y no están definidos, indica que deben confirmarse por valoración o con recepción.
 - Si el usuario quiere cita, indícale que debe escribir a recepción por WhatsApp o llamar a la clínica.
 - SOLO puedes dar precios si están en la lista de precios.
@@ -246,14 +247,15 @@ def chat(request: ChatRequest):
         "price list",
     ]
 
-    if any(phrase in text for phrase in general_price_requests):
+    if any(phrase in text for phrase in general_price_requests) and not any(
+    kw in text for kws in price_keywords.values() for kw in kws):
         return ChatResponse(
-            reply=(
-                "Con gusto. Podemos brindarte el precio del tratamiento que te interese. "
-                "Por favor indícanos cuál servicio deseas consultar, por ejemplo: limpieza dental, extracción, blanqueamiento o radiografía intraoral."
-            ),
-            redirect_to_human=False,
-        )
+        reply=(
+            "Con gusto. Podemos brindarte el precio del tratamiento que te interese. "
+            "Por favor indícanos cuál servicio deseas consultar, por ejemplo: limpieza dental, extracción, blanqueamiento o radiografía intraoral."
+        ),
+        redirect_to_human=False,
+    )
 
     price_intent_keywords = [
         "precio",
