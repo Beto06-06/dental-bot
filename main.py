@@ -5,12 +5,20 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
+from fastapi.middleware.cors import CORSMiddleware
 
 from clinic_data import CLINIC_INFO, APPOINTMENT_KEYWORDS
 
 load_dotenv()
 
 app = FastAPI(title="Dental Bot API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
