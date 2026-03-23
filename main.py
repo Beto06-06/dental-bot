@@ -237,38 +237,6 @@ def chat(request: ChatRequest):
                 redirect_to_human=False,
             )
 
-    general_price_requests = [
-        "precios",
-        "precio de servicios",
-        "lista de precios",
-        "cuáles son los precios",
-        "quiero saber precios",
-        "what are your prices",
-        "price list",
-    ]
-
-    if any(phrase in text for phrase in general_price_requests) and not any(
-    kw in text for kws in price_keywords.values() for kw in kws):
-        return ChatResponse(
-        reply=(
-            "Con gusto. Podemos brindarte el precio del tratamiento que te interese. "
-            "Por favor indícanos cuál servicio deseas consultar, por ejemplo: limpieza dental, extracción, blanqueamiento o radiografía intraoral."
-        ),
-        redirect_to_human=False,
-    )
-
-    price_intent_keywords = [
-        "precio",
-        "cuesta",
-        "cuánto cuesta",
-        "cuanto cuesta",
-        "vale",
-        "costo",
-        "cost",
-        "price",
-        "how much",
-    ]
-
     price_keywords = {
         "extracción compleja": [
             "extraccion compleja",
@@ -304,6 +272,39 @@ def chat(request: ChatRequest):
             "rayos x",
         ],
     }
+
+    general_price_requests = [
+        "precios",
+        "precio de servicios",
+        "lista de precios",
+        "cuáles son los precios",
+        "quiero saber precios",
+        "what are your prices",
+        "price list",
+    ]
+
+    if any(phrase in text for phrase in general_price_requests) and not any(
+        kw in text for kws in price_keywords.values() for kw in kws
+    ):
+        return ChatResponse(
+            reply=(
+                "Con gusto. Podemos brindarte el precio del tratamiento que te interese. "
+                "Por favor indícanos cuál servicio deseas consultar, por ejemplo: limpieza dental, extracción, blanqueamiento o radiografía intraoral."
+            ),
+            redirect_to_human=False,
+        )
+
+    price_intent_keywords = [
+        "precio",
+        "cuesta",
+        "cuánto cuesta",
+        "cuanto cuesta",
+        "vale",
+        "costo",
+        "cost",
+        "price",
+        "how much",
+    ]
 
     if any(keyword in text for keyword in price_intent_keywords):
         for service, keywords in price_keywords.items():
