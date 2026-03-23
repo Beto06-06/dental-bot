@@ -248,9 +248,7 @@ def chat(request: ChatRequest):
     price_keywords = {
         "extracción compleja": [
             "extraccion compleja",
-            "extracción compleja",
-            "cordales",
-            "cirugia",
+            "extracción compleja"
         ],
         "extracción": [
             "extraccion",
@@ -280,6 +278,15 @@ def chat(request: ChatRequest):
             "rayos x",
         ],
     }
+
+    if "cordales" in text or "cirugia de cordales" in text or "cirugía de cordales" in text:
+        return ChatResponse(
+        reply=(
+            "El costo de la cirugía de cordales puede variar según la valoración del caso. "
+            "Te recomendamos agendar una cita para brindarte información más precisa."
+        ),
+        redirect_to_human=False,
+    )
 
     general_price_requests = [
         "precios",
