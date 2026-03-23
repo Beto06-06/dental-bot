@@ -305,20 +305,34 @@ def chat(request: ChatRequest):
         "price",
         "how much",
     ]
-
     if any(keyword in text for keyword in price_intent_keywords):
+        matched_prices = []
         for service, keywords in price_keywords.items():
             if any(keyword in text for keyword in keywords):
                 price = CLINIC_INFO.get("prices", {}).get(service)
-                if price:
-                    return ChatResponse(
-                        reply=(
-                            f"El precio de {service} es {price}. "
-                            f"El costo puede variar según el diagnóstico. "
-                            f"Te recomendamos agendar una valoración."
-                        ),
-                        redirect_to_human=False,
-                    )
+                
+            if price:
+                matched_prices.append(f"{service}: {price}")
+
+    if matched_prices:
+        if len(matched_prices) == 1:
+            reply_text = (
+                f"El precio de {matched_prices[0]}. "
+                f"El costo puede variar según el diagnóstico. "
+                f"Te recomendamos agendar una valoración."
+            )
+        else:
+            reply_text = (
+                "Estos son los precios de los servicios consultados:\n- "
+                + "\n- ".join(matched_prices)
+                + "\nEl costo puede variar según el diagnóstico. "
+                  "Te recomendamos agendar una valoración."
+            )
+
+        return ChatResponse(
+            reply=reply_text,
+            redirect_to_human=False,
+        )
 
     ai_reply = ask_ai(message)
 
