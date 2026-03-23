@@ -279,7 +279,11 @@ def chat(request: ChatRequest):
         ],
     }
 
-    if "cordales" in text or "cirugia de cordales" in text or "cirugía de cordales" in text:
+    if (
+    ("cordales" in text or "cirugia de cordales" in text or "cirugía de cordales" in text)
+    and any(keyword in text for keyword in [
+        "precio", "cuesta", "cuánto cuesta", "cuanto cuesta", "vale", "costo", "price", "how much"
+    ])):
         return ChatResponse(
         reply=(
             "El costo de la cirugía de cordales puede variar según la valoración del caso. "
