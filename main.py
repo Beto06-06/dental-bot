@@ -360,3 +360,4 @@ def chat(request: ChatRequest):
         reply=ai_reply,
         redirect_to_human=False,
     )
+#LUNES 23 DE MARZO BOT FUNCIONANDO A LA 1:21pm 
