@@ -204,6 +204,7 @@ def chat(request: ChatRequest):
         "¿Cuánto dura una limpieza dental?": [
             "cuanto dura limpieza",
             "cuánto dura limpieza",
+            "horario limpieza",
         ],
         "¿El blanqueamiento dental es seguro?": [
             "blanqueamiento seguro",
@@ -225,6 +226,13 @@ def chat(request: ChatRequest):
         "¿Atienden en inglés?": [
             "atienden en ingles",
             "atienden en inglés",
+        ],
+        "¿Cuál es el horario?": [
+            "horario",
+            "horario porfavor",
+            "horario por favor",
+            "a que hora atienden",
+            "a qué hora atienden",
         ],
     }
 
@@ -305,34 +313,35 @@ def chat(request: ChatRequest):
         "price",
         "how much",
     ]
+
     if any(keyword in text for keyword in price_intent_keywords):
         matched_prices = []
+
         for service, keywords in price_keywords.items():
             if any(keyword in text for keyword in keywords):
                 price = CLINIC_INFO.get("prices", {}).get(service)
-                
-            if price:
-                matched_prices.append(f"{service}: {price}")
+                if price:
+                    matched_prices.append(f"{service}: {price}")
 
-    if matched_prices:
-        if len(matched_prices) == 1:
-            reply_text = (
-                f"El precio de {matched_prices[0]}. "
-                f"El costo puede variar según el diagnóstico. "
-                f"Te recomendamos agendar una valoración."
-            )
-        else:
-            reply_text = (
-                "Estos son los precios de los servicios consultados:\n- "
-                + "\n- ".join(matched_prices)
-                + "\nEl costo puede variar según el diagnóstico. "
-                  "Te recomendamos agendar una valoración."
-            )
+        if matched_prices:
+            if len(matched_prices) == 1:
+                reply_text = (
+                    f"El precio de {matched_prices[0]}. "
+                    f"El costo puede variar según el diagnóstico. "
+                    f"Te recomendamos agendar una valoración."
+                )
+            else:
+                reply_text = (
+                    "Estos son los precios de los servicios consultados:\n- "
+                    + "\n- ".join(matched_prices)
+                    + "\nEl costo puede variar según el diagnóstico. "
+                      "Te recomendamos agendar una valoración."
+                )
 
-        return ChatResponse(
-            reply=reply_text,
-            redirect_to_human=False,
-        )
+            return ChatResponse(
+                reply=reply_text,
+                redirect_to_human=False,
+            )
 
     ai_reply = ask_ai(message)
 
