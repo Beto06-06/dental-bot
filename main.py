@@ -93,6 +93,10 @@ Reglas importantes:
 - Responde en el mismo idioma en el que el usuario escribe.
 - Si la pregunta del usuario coincide con una pregunta frecuente, utiliza exactamente esa respuesta.
 - No reformules innecesariamente las respuestas del FAQ.
+- No des una lista completa de precios a menos que el usuario pida varios servicios específicos.
+- Si el usuario pregunta por precios en general sin mencionar un servicio, pídele que indique cuál tratamiento le interesa.
+- Si el usuario menciona un solo servicio, responde solo con el precio de ese servicio.
+- Si el usuario menciona varios servicios, responde solo con los precios de esos servicios.
 
 Precios:
 {chr(10).join([f"  - {service}: {price}" for service, price in CLINIC_INFO.get('prices', {}).items()])}
@@ -231,6 +235,25 @@ def chat(request: ChatRequest):
                 reply=item["answer"],
                 redirect_to_human=False,
             )
+
+    general_price_requests = [
+        "precios",
+        "precio de servicios",
+        "lista de precios",
+        "cuáles son los precios",
+        "quiero saber precios",
+        "what are your prices",
+        "price list",
+    ]
+
+    if any(phrase in text for phrase in general_price_requests):
+        return ChatResponse(
+            reply=(
+                "Con gusto. Podemos brindarte el precio del tratamiento que te interese. "
+                "Por favor indícanos cuál servicio deseas consultar, por ejemplo: limpieza dental, extracción, blanqueamiento o radiografía intraoral."
+            ),
+            redirect_to_human=False,
+        )
 
     price_intent_keywords = [
         "precio",
